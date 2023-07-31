@@ -15,7 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rest_framework.routers import SimpleRouter
+
+from services.views import SubscriptionView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+router = SimpleRouter()
+
+router.register(r'api-subscriptions', SubscriptionView)
+
+urlpatterns += router.urls
