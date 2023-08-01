@@ -25,6 +25,6 @@ urlpatterns = [
 
 router = SimpleRouter()
 
-router.register(r'api-subscriptions', SubscriptionView)
+router.register(r'api/subscriptions', SubscriptionView)
 
 urlpatterns += router.urls
