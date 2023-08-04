@@ -2,7 +2,7 @@ from django.core.validators import MaxValueValidator
 from django.db import models
 
 from clients.models import Client
-from services.tasks import set_price
+from services.tasks import set_price, set_comment
 
 
 class Service(models.Model):
@@ -27,6 +27,7 @@ class Service(models.Model):
 
         return result
 
+
 class Plan(models.Model):
     PLAN_TYPES = (
         ('full', 'Full'),
@@ -49,6 +50,7 @@ class Plan(models.Model):
             subscriptions_id = self.subscriptions.values_list('id', flat=True)
             for subscription_id in subscriptions_id:
                 set_price.delay(subscription_id)
+                set_comment.delay(subscription_id)
 
         return result
 
@@ -61,6 +63,7 @@ class Subscription(models.Model):
     service = models.ForeignKey(Service, related_name='subscriptions', on_delete=models.PROTECT)
     plan = models.ForeignKey(Plan, related_name='subscriptions', on_delete=models.PROTECT)
     price = models.PositiveIntegerField(default=0)
+    comment = models.CharField(max_length=50, default='')
 
     def __str__(self):
         return f'Client: {self.client} | Service: {self.service}'
